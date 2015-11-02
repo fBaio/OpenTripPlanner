@@ -76,7 +76,7 @@ public class OSMNode extends OSMWithTags {
     public boolean isBikeRental() {
         return isTag("amenity", "bicycle_rental");
     }
-
+	
     /**
      * Checks if this node is bollard
      * @return true if it is

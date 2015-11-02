@@ -42,6 +42,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
+
+
 /**
  * A trip planning request. Some parameters may not be honored by the trip planner for some or all itineraries.
  * For example, maxWalkDistance may be relaxed if the alternative is to not provide a route.
@@ -404,6 +408,68 @@ public class RoutingRequest implements Cloneable, Serializable {
     /* Whether we are in "long-distance mode". This is currently a server-wide setting, but it could be made per-request. */
     // TODO remove
     public boolean longDistance = false;
+	
+	    /*AGGIUNTA: permette/blocca le strade con highway=footway*/
+	
+	    public boolean permitFootway=true; 
+	    
+	    /*AGGUINTA: permette/blocca il passaggio di tornelli*/
+	    
+	    public boolean permitBollards=true; 
+	    
+	    //AGGIUNTA: metodi per preferenze
+	    /*
+	    public int permitStairs=1;
+	    public int permitCrossing=1;
+	    public int permitBollard=1;
+	    public int permitTurnstile=1;
+	    public int permitCycleBarrier=1;
+	    public int permitTrafficLight=1;
+	    public int permitTrafficLightSound=1;
+	    public int permitTrafficLightVibration=1;
+	    public int permitTrafficLightVibrationFloor=1;
+	    */
+	    
+	    //AGGIUNTA valori settati per i profili utente
+	    //SEDIA A ROTELLE
+	    
+	    public int permitStairs=-1;
+	    public int permitCrossing=2;
+	    public int permitBollard=-1;
+	    public int permitTurnstile=-1;
+	    public int permitCycleBarrier=-1;
+	    public int permitTrafficLight=2;
+	    public int permitTrafficLightSound=1;
+	    public int permitTrafficLightVibration=1;
+	    public int permitTrafficLightVibrationFloor=1;
+	    
+	    
+	    //NON VEDENTE
+	    /*
+	    public int permitStairs=1;
+	    public int permitCrossing=1;
+	    public int permitBollard=0;
+	    public int permitTurnstile=0;
+	    public int permitCycleBarrier=0;
+	    public int permitTrafficLight=2;
+	    public int permitTrafficLightSound=2;
+	    public int permitTrafficLightVibration=2;
+	    public int permitTrafficLightVibrationFloor=2;
+	    */
+	    
+	    //CORRIDORE
+	    /*
+	    public int permitStairs=2;
+	    public int permitCrossing=1;
+	    public int permitBollard=1;
+	    public int permitTurnstile=1;
+	    public int permitCycleBarrier=1;
+	    public int permitTrafficLight=0;
+	    public int permitTrafficLightSound=1;
+	    public int permitTrafficLightVibration=1;
+	    public int permitTrafficLightVibrationFloor=1;
+	    */
+	    
 
     /** Should traffic congestion be considered when driving? */
     public boolean useTraffic = true;
@@ -521,7 +587,104 @@ public class RoutingRequest implements Cloneable, Serializable {
         this.wheelchairAccessible = wheelchairAccessible;
     }
 
-
+	/*AGGIUNTA: metodo set per permitFooway*/
+	    public void setPermitFootway(boolean permitFootway) {
+	        this.permitFootway = permitFootway;
+	    }
+	    
+	    /*AGGIUNTA: metodi get e set per le preferenze*/
+	       
+	    public int getPermitStairs()
+	    {
+	    	return permitStairs;
+	    }
+	    
+	    public void setPermitStairs(int permitStairs)
+	    {
+	    	this.permitStairs=permitStairs;
+	    }
+	    
+	    
+	    public int getPermitCrossing()
+	    {
+	    	return permitCrossing;
+	    }
+	    
+	    public void setPermitCrossing(int permitCrossing)
+	    {
+	    	this.permitCrossing=permitCrossing;
+	    }
+	    
+	    public int getPermitBollard()
+	    {
+	    	return permitBollard;
+	    }
+	    
+	    public void setPermitBollard(int permitBollard)
+	    {
+	    	this.permitBollard=permitBollard;
+	    }
+	    
+	    public int getPermitTurnstile()
+	    {
+	    	return permitTurnstile;
+	    }
+	    
+	    public void setPermitTurnstile(int permitTurnstile)
+	    {
+	    	this.permitTurnstile=permitTurnstile;
+	    }
+	    
+	    public int getPermitPermitCycleBarrier()
+	    {
+	    	return permitCycleBarrier;
+	    }
+	    
+	    public void setPermitCycleBarrier(int permitCycleBarrier)
+	    {
+	    	this.permitCycleBarrier=permitCycleBarrier;
+	    }
+	    
+	    public int getPermitTrafficLight()
+	    {
+	    	return permitTrafficLightSound;
+	    }
+	    
+	    public void setPermitTrafficLight(int permitTrafficLight)
+	    {
+	    	this.permitTrafficLight=permitTrafficLight;
+	    }
+	    
+	    
+	    public int getPermitTrafficLightSound()
+	    {
+	    	return permitTrafficLightSound;
+	    }
+	    
+	    public void setPermitTrafficLightSound(int permitTrafficLightSound)
+	    {
+	    	this.permitTrafficLightSound=permitTrafficLightSound;
+	    }
+	    
+	    public int getPermitTrafficLightVibration()
+	    {
+	    	return permitTrafficLightVibration;
+	    }
+	    
+	    public void setPermitTrafficLightVibration(int permitTrafficLightVibration)
+	    {
+	    	this.permitTrafficLightVibration=permitTrafficLightVibration;
+	    }
+	    
+	    public int getPermitTrafficLightVibrationFloor()
+	    {
+	    	return permitTrafficLightVibrationFloor;
+	    }
+	    
+	    public void setPermitTrafficLightVibrationFloor(int permitTrafficLightVibrationFloor)
+	    {
+	    	this.permitTrafficLightVibrationFloor=permitTrafficLightVibrationFloor;
+	    }
 
     /**
      * only allow traversal by the specified mode; don't allow walking bikes. This is used during contraction to reduce the number of possible paths.
@@ -924,6 +1087,19 @@ public class RoutingRequest implements Cloneable, Serializable {
                 && reverseOptimizeOnTheFly == other.reverseOptimizeOnTheFly
                 && ignoreRealtimeUpdates == other.ignoreRealtimeUpdates
                 && disableRemainingWeightHeuristic == other.disableRemainingWeightHeuristic
+					/*AGGIUNTA: footway*/
+					                && permitFootway == other.permitFootway      
+					                
+					                //AGGIUNTA: preferenze
+					                
+					                && permitCrossing == other.permitCrossing
+					                && permitBollard == other.permitBollard
+					                && permitTurnstile == other.permitTurnstile
+					                && permitCycleBarrier == other.permitCycleBarrier
+					                && permitTrafficLightSound == other.permitTrafficLightSound
+					                && permitTrafficLightVibration == other.permitTrafficLightVibration
+					                && permitTrafficLightVibrationFloor == other.permitTrafficLightVibrationFloor               
+					                
                 && Objects.equal(startingTransitTripId, other.startingTransitTripId)
                 && useTraffic == other.useTraffic;
     }

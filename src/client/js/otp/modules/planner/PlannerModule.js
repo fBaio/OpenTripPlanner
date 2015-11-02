@@ -32,6 +32,21 @@ otp.modules.planner.defaultQueryParams = {
     triangleTimeFactor              : 0.333,
     triangleSlopeFactor             : 0.333,
     triangleSafetyFactor            : 0.334,
+//AGGIUNTA: per le footway, valore default true 
+    footway							: true,
+  //AGGUINTA: per le bollard
+    allowBollard					:true,
+    
+    //AGGIUNTA: tutta la roba per i permessi
+    permitStairs					:1,
+    permitCrossing					:1,
+    permitBollard					:1,
+    permitTurnstile					:1,
+    permitCycleBarrier				:1,
+    permitTrafficLight				:1,
+    permitTrafficLightSound			:1,
+    permitTrafficLightVibration		:1,
+    permitTrafficLightVibrationFloor :1,
 }
 
 otp.modules.planner.PlannerModule =
@@ -339,6 +354,10 @@ otp.modules.planner.PlannerModule =
             };
             if(this.arriveBy !== null) _.extend(queryParams, { arriveBy : this.arriveBy } );
             if(this.wheelchair !== null) _.extend(queryParams, { wheelchair : this.wheelchair });
+
+			//AGGIUNTA: per le footway
+            if(this.footway != null) _.extend(queryParams, { footway : this.footway })
+				
             if(this.preferredRoutes !== null) {
                 queryParams.preferredRoutes = this.preferredRoutes;
                 if(this.otherThanPreferredRoutesPenalty !== null)

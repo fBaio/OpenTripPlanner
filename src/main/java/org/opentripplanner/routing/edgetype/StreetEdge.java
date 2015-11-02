@@ -77,9 +77,23 @@ public class StreetEdge extends Edge implements Cloneable {
     private static final int STAIRS_FLAG_INDEX = 4;
     private static final int SLOPEOVERRIDE_FLAG_INDEX = 5;
     private static final int WHEELCHAIR_ACCESSIBLE_FLAG_INDEX = 6;
+	
+	/*AGGIUNTA: flag per la presenza di strade per pedoni*/
+	    private static final int FOOTWAY_FLAG_INDEX = 7;
+	    /*AGGIUNTA: flag per indicare la presenza di un nodo bollard e resto*/
+	    
+	    
+	    private static final int CROSSING_FLAG_INDEX= 8;
+	    private static final int CONTAINS_BOLLARD_FLAG_INDEX = 9;
+	    private static final int CONTAINS_TURNSTILE_FLAG_INDEX = 10;
+	    private static final int CONTAINS_CYCLEBARRIER_FLAG_INDEX = 11;
+	    private static final int CONTAINS_TRAFFICLIGHT_FLAG_INDEX=12; 
+	    private static final int CONTAINS_TRAFFICLIGHT_SOUND_FLAG_INDEX = 13;
+	    private static final int CONTAINS_TRAFFICLIGHT_VIBRATION_FLAG_INDEX = 14;
+	    private static final int CONTAINS_TRAFFICLIGHT_FLOORVIBRATION_FLAG_INDEX = 15;
 
     /** back, roundabout, stairs, ... */
-    private byte flags;
+    private short flags;
 
     /**
      * Length is stored internally as 32-bit fixed-point (millimeters). This allows edges of up to ~2100km.
@@ -205,6 +219,87 @@ public class StreetEdge extends Edge implements Cloneable {
                 return false;
             }
         }
+		
+		/*AGGIUNTA: controllo che l'arco non sia una footway, se è così non lo considero*/
+		        if(!options.permitFootway) {
+		        	if(isFootWay()) {
+		        		return false;
+		       		}
+		        }
+		        
+		        //AGGIUNTA: controllo se l'arco contiene una delle preferenze e non vogliamo attraversarla
+		       
+		        /*System.out.print("Contenuto delle opzioni dell'arco:\n"+  
+		        		  "Stairs:" + options.permitStairs + "\n" +
+						  "Crossing:" + options.permitCrossing + "\n" +
+						  "Bollard:" + options.permitBollard + "\n" +
+						  "Cyclebarrier:" + options.permitCycleBarrier + "\n" +
+						  "Turnstile:" + options.permitTurnstile + "\n" +
+						  "TrafficLight:" + options.permitTrafficLight + "\n" +
+						  "TrafficLightSound:" + options.permitTrafficLightSound + "\n" +
+						  "TrafficLightVibration:" + options.permitTrafficLightVibration + "\n" +
+						  "TrafficLightVibrationFloor:" + options.permitTrafficLightVibrationFloor + "\n\n");
+		        
+		        System.out.print("Tipo di arco:\n"+         
+		        		  "Stairs:" + isStairs() + "\n" +
+						  "Crossing:" + isCrossing() + "\n" +
+						  "Bollard:" + containsBollard() + "\n" +
+						  "Cyclebarrier:" + containsCycleBarrier() + "\n" +
+						  "Turnstile:" + containsTurnstile() + "\n" +
+						  "TrafficLight:" + containsTrafficLight() + "\n" +
+						  "TrafficLightSound:" + containsTrafficLightSound() + "\n" +
+						  "TrafficLightVibration:" + containsTrafficLightVibration() + "\n" +
+						  "TrafficLightVibrationFloor:" + containsTrafficLightVibrationFloor() + "\n\n");*/
+		
+		        /*
+		        if(   (options.permitCrossing==-1 && isCrossing())
+		        	||(options.permitStairs==-1 && isStairs())	
+		        	||(options.permitBollard==-1 && containsBollard())
+		        	||(options.permitCycleBarrier==-1 && containsCycleBarrier())
+		        	||(options.permitTurnstile==-1 && containsTurnstile())
+		        	||(options.permitTrafficLight==-1 && containsTrafficLight())
+		        	||(options.permitTrafficLightSound==-1 && containsTrafficLightSound())
+		        	||(options.permitTrafficLightVibration==-1 && containsTrafficLightVibration())
+		        	||(options.permitTrafficLightVibrationFloor==-1 && containsTrafficLightVibrationFloor())
+		          )
+		        {
+		        	
+		        	return false;
+		        }
+		        */
+		        //Rivisti controlli per verificare agibilità dell'arco
+		        if(isCrossing())
+		        {
+		        	if(options.permitCrossing==-1)
+		        		return false;
+		        	else
+		        	{
+		        		if(	(options.permitTrafficLightSound==-1 && containsTrafficLightSound())
+		        			||(options.permitTrafficLightVibration==-1 && containsTrafficLightVibration())
+		        	        ||(options.permitTrafficLightVibrationFloor==-1 && containsTrafficLightVibrationFloor())
+		        	      )
+		        	    {
+		        			return false;
+		        	    }
+		        	}
+		        	
+		        }
+		        else
+		        {
+		        	if(    	(options.permitStairs==-1 && isStairs())	
+		                	||(options.permitBollard==-1 && containsBollard())
+		                	||(options.permitCycleBarrier==-1 && containsCycleBarrier())
+		                	||(options.permitTurnstile==-1 && containsTurnstile())
+		                	||(options.permitTrafficLight==-1 && containsTrafficLight())
+		              )
+		            {
+		        		return false;
+		            }
+		        }
+		        
+		        
+		        
+		
         return canTraverseIncludingBarrier(mode);
     }
 
@@ -376,6 +471,200 @@ public class StreetEdge extends Edge implements Cloneable {
                 double elevationUtilsSpeed = 4.0 / 3.0;
                 weight = costs * (elevationUtilsSpeed / speed);
                 time = weight; //treat cost as time, as in the current model it actually is the same (this can be checked for maxSlope == 0)
+				
+				double mult=1.0;
+				                
+				                if (isStairs()) {
+				                	
+				                	switch(options.permitStairs)
+				                	{
+				                		case 0:
+				                			mult*=2.0;
+				                		break;
+				                		case 1:
+				                			mult*=1.0;
+				                		break;
+				                		case 2:
+				                			mult*=0.5;
+				                		break;
+				                		default:
+				                			mult*=1.0;
+				                		break;
+				                	}
+				                }
+				                
+				                if(isCrossing())
+				                {
+				                	switch(options.permitCrossing)
+				                	{
+				                		case 0:
+				                			mult*=2.0;
+				                		break;
+				                		case 1:
+				                			mult*=1.0;
+				                		break;
+				                		case 2:
+				                			mult*=0.5;
+				                		break;
+				                		default:
+				                			mult*=1.0;
+				                		break;
+				                	}
+				                	
+				                
+				                	if(containsTrafficLightSound())
+				                	{
+				                		switch(options.permitTrafficLightSound)
+				                		{
+				                			case 0:
+				                				mult*=2.0;
+				                				break;
+				                			case 1:
+				                				mult*=1.0;
+				                				break;
+				                			case 2:
+				                				mult*=0.5;
+				                				break;
+				                			default:
+				                				mult*=1.0;
+				                				break;
+				                		}
+				                	}
+				                	if(containsTrafficLightVibration())
+				                    {
+				                    	switch(options.permitTrafficLightVibration)
+				                    	{
+				                    		case 0:
+				                    			mult*=2.0;
+				                    		break;
+				                    		case 1:
+				                    			mult*=1.0;
+				                    		break;
+				                    		case 2:
+				                    			mult*=0.5;
+				                    		break;
+				                    		default:
+				                    			mult*=1.0;
+				                    		break;
+				                    	}
+				                    	
+				                    }
+				                	
+				                	
+				                	if(containsTrafficLightVibrationFloor())
+				                    {
+				                    	switch(options.permitTrafficLightVibrationFloor)
+				                    	{
+				                    		case 0:
+				                    			mult*=2.0;
+				                    		break;
+				                    		case 1:
+				                    			mult*=1.0;
+				                    		break;
+				                    		case 2:
+				                    			mult*=0.5;
+				                    		break;
+				                    		default:
+				                    			mult*=1.0;
+				                    		break;
+				                    	}
+				                    	
+				                    }
+				                	                	
+				                }
+				                
+				                if(containsTrafficLight())
+				                {
+				                	switch(options.permitTrafficLight)
+				                	{
+				                		case 0:
+				                			mult*=2.0;
+				                		break;
+				                		case 1:
+				                			mult*=1.0;
+				                		break;
+				                		case 2:
+				                			mult*=0.5;
+				                		break;
+				                		default:
+				                			mult*=1.0;
+				                		break;
+				                	}
+				                	
+				                }
+				                
+				                if(containsBollard())
+				                {
+				                	switch(options.permitBollard)
+				                	{
+				                		case 0:
+				                			mult*=2.0;
+				                		break;
+				                		case 1:
+				                			mult*=1.0;
+				                		break;
+				                		case 2:
+				                			mult*=0.5;
+				                		break;
+				                		default:
+				                			mult*=1.0;
+				                		break;
+				                	}
+				                	
+				                }
+				                
+				                
+				                if(containsTurnstile())
+				                {
+				                	switch(options.permitTurnstile)
+				                	{
+				                		case 0:
+				                			mult*=2.0;
+				                		break;
+				                		case 1:
+				                			mult*=1.0;
+				                		break;
+				                		case 2:
+				                			mult*=0.5;
+				                		break;
+				                		default:
+				                			mult*=1.0;
+				                		break;
+				                	}
+				                	
+				                }
+				                
+				                if(containsCycleBarrier())
+				                {
+				                	switch(options.permitCycleBarrier)
+				                	{
+				                		case 0:
+				                			mult*=2.0;
+				                		break;
+				                		case 1:
+				                			mult*=1.0;
+				               		break;
+				                		case 2:
+				                			mult*=0.5;
+				                		break;
+				                		default:
+				                			mult*=1.0;
+				               		break;
+				                	}
+				                	
+				                }
+				                
+				                //System.out.print("valore del moltiplicatore: "+ mult+ "\n");
+				                //System.out.print("valore del peso dell'arco: "+ weight+"\n\n");
+				                
+				                weight*=mult;
+				                
+				               /*if(containsBollard())
+				            	{
+				            		System.out.print("Questa strada contiene una bollard, raddoppiato il peso\n");
+				            		weight=2*weight;
+				            	}*/
+				
                 /*
                 // debug code
                 if(weight > 100){
@@ -383,6 +672,8 @@ public class StreetEdge extends Edge implements Cloneable {
                     System.out.format("line length: %.1f m, slope: %.3f ---> slope costs: %.1f , weight: %.1f , time (flat):  %.1f %n", length, elevationProfile.getMaxSlope(), costs, weight, timeflat);
                 }
                 */
+					
+			
             }
         }
 
@@ -765,6 +1056,89 @@ public class StreetEdge extends Edge implements Cloneable {
 	public void setSlopeOverride(boolean slopeOverride) {
 	    flags = BitSetUtils.set(flags, SLOPEOVERRIDE_FLAG_INDEX, slopeOverride);
 	}
+	
+	/*AGGIUNTA: get e set per flag di footway*/
+		public boolean isFootWay() {
+			//System.out.print(flags+"\n");
+			return BitSetUtils.get(flags, FOOTWAY_FLAG_INDEX);
+		}
+	
+		public void setFootWay(boolean footWay) {
+		    flags = BitSetUtils.set(flags, FOOTWAY_FLAG_INDEX, footWay);
+		    //System.out.print(flags+"\n");
+		}
+		
+		/*AGGIUNTA: get e set per flag di bollard*/
+		public boolean containsBollard() {
+			return BitSetUtils.get(flags, CONTAINS_BOLLARD_FLAG_INDEX);
+		}
+		
+		public void setContainsBollard(boolean containsBollard) {
+			flags = BitSetUtils.set(flags, CONTAINS_BOLLARD_FLAG_INDEX, containsBollard);
+		}
+		
+		//AGGIUNTA: get e set per le preferenze
+		
+		
+		public boolean isCrossing() {
+			//System.out.print(flags+"\n");
+			return BitSetUtils.get(flags, CROSSING_FLAG_INDEX);
+		}
+	
+		public void setCrossing(boolean crossing) {
+		    flags = BitSetUtils.set(flags, CROSSING_FLAG_INDEX, crossing);
+		    //System.out.print(flags+"\n");
+		}
+		
+		
+		
+		public boolean containsTurnstile() {
+			return BitSetUtils.get(flags, CONTAINS_TURNSTILE_FLAG_INDEX);
+		}
+		
+		public void setContainsTurnstile(boolean containsTurnstile) {
+			flags = BitSetUtils.set(flags, CONTAINS_TURNSTILE_FLAG_INDEX, containsTurnstile);
+		}
+		
+		public boolean containsCycleBarrier() {
+			return BitSetUtils.get(flags, CONTAINS_CYCLEBARRIER_FLAG_INDEX);
+		}
+		
+		public void setContainsCycleBarrier(boolean containsCycleBarrier) {
+			flags = BitSetUtils.set(flags, CONTAINS_CYCLEBARRIER_FLAG_INDEX, containsCycleBarrier);
+		}
+		
+		public boolean containsTrafficLight() {
+			return BitSetUtils.get(flags, CONTAINS_TRAFFICLIGHT_FLAG_INDEX);
+		}
+		
+		public void setContainsTrafficLight(boolean containsTrafficLight) {
+			flags = BitSetUtils.set(flags, CONTAINS_TRAFFICLIGHT_FLAG_INDEX, containsTrafficLight);
+		}
+		
+		public boolean containsTrafficLightSound() {
+			return BitSetUtils.get(flags, CONTAINS_TRAFFICLIGHT_SOUND_FLAG_INDEX);
+		}
+		
+		public void setContainsTrafficLightSound(boolean containsTrafficLightSound) {
+			flags = BitSetUtils.set(flags, CONTAINS_TRAFFICLIGHT_SOUND_FLAG_INDEX, containsTrafficLightSound);
+		}
+		
+		public boolean containsTrafficLightVibration() {
+			return BitSetUtils.get(flags, CONTAINS_TRAFFICLIGHT_VIBRATION_FLAG_INDEX);
+		}
+		
+		public void setContainsTrafficLightVibration(boolean containsTrafficLightVibration) {
+			flags = BitSetUtils.set(flags, CONTAINS_TRAFFICLIGHT_VIBRATION_FLAG_INDEX, containsTrafficLightVibration);
+		}
+		
+		public boolean containsTrafficLightVibrationFloor() {
+			return BitSetUtils.get(flags, CONTAINS_TRAFFICLIGHT_FLOORVIBRATION_FLAG_INDEX);
+		}
+		
+		public void setContainsTrafficLightVibrationFloor(boolean containsTrafficLightVibrationFloor) {
+			flags = BitSetUtils.set(flags, CONTAINS_TRAFFICLIGHT_FLOORVIBRATION_FLAG_INDEX, containsTrafficLightVibrationFloor);
+		}
 
     /**
      * Return the azimuth of the first segment in this edge in integer degrees clockwise from South.

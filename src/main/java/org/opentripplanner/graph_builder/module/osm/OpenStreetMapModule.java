@@ -1102,9 +1102,194 @@ public class OpenStreetMapModule implements GraphBuilderModule {
 
             // save the way ID so we can match with OpenTraffic
             street.wayId = way.getId();
+			
+			/*AGGIUNTA: attivo flag presenza footway, se è presente*/
+			            //street.isFootWay();
+			            if ("footway".equals(highway)) {
+			            street.setFootWay(true);
+			            //Aggiunta: per la mia sanità mentale, mi scrivo gli id delle strade con footway
+			            //e i valori delle flag
+			            //System.out.print(way.getId()+"\n");
+			            //System.out.print("Footway flag value:"+ street.isFootWay() +"\n");
+			            }
+			            
+			            /*AGGIUNTA: qualcosa per verificare se uno dei nodi della way contiene una certa tag*/
+			            /*if(wayContainsBollard(way)) {
+			            	street.setContainsBollard(true);
+			            }*/
+			            
+			            /*AGGIUNTA: controllo la presenza di un semaforo*/
+			            if(wayContainsTagInNode(way, "trafficlight"))
+			            	street.setContainsTrafficLight(true);
+			            
+			            //AGGIUNTA: controllo se è un crossing, nel caso controllo se contiene pure semafori speciali
+			            if(way.isTag("footway", "crossing") || way.isTag("cycleway", "crossing"))
+			       		{
+			            	street.setCrossing(true);
+			            	
+			            	if(wayContainsTagInNode(way,"trafficlightsound"))
+			            		street.setContainsTrafficLightSound(true);
+			            	if(wayContainsTagInNode(way,"trafficlightvibration"))
+			            		street.setContainsTrafficLightVibration(true);;
+			            	if(wayContainsTagInNode(way,"trafficlightfloorvibration"))
+			            		street.setContainsTrafficLightVibrationFloor(true);
+			            	
+			       		}
+			            
+			            //AGGIUNTA controlli per tag contenuti nei nodi
+			            
+			            if(wayContainsTagInNode(way, "bollard"))
+			            	street.setContainsBollard(true);
+			            if(wayContainsTagInNode(way, "turnstile"))
+			            	street.setContainsTurnstile(true);
+			            if(wayContainsTagInNode(way, "cyclebarrier"))
+			            	street.setContainsCycleBarrier(true);
+			            
+			            //street.id=Long.toString(way.getId());
+			            
+			            
 
             return street;
         }
+		
+		protected boolean wayContainsTagInNode(OSMWay way, String Tag)
+		        {
+		        	boolean hasTag=false;
+		        	
+		        	//Questo ciclo dovrebbe eliminare nodi duplicati
+		        	ArrayList<Long> nodes = new ArrayList<Long>(way.getNodeRefs().size());
+		            long last = -1;
+		            double lastLat = -1, lastLon = -1;
+		            String lastLevel = null;
+		            for (long nodeId : way.getNodeRefs()) {
+		                OSMNode node = osmdb.getNode(nodeId);
+		                
+		                boolean levelsDiffer = false;
+		                String level = node.getTag("level");
+		                if (lastLevel == null) {
+		                    if (level != null) {
+		                        levelsDiffer = true;
+		                    }
+		                } else {
+		                    if (!lastLevel.equals(level)) {
+		                        levelsDiffer = true;
+		                    }
+		                }
+		                if (nodeId != last
+		                        && (node.lat != lastLat || node.lon != lastLon || levelsDiffer))
+		                    nodes.add(nodeId);
+		                last = nodeId;
+		                lastLon = node.lon;
+		                lastLat = node.lat;
+		                lastLevel = level;
+		            }
+		
+		            boolean foundit=false;
+		            
+		            for (long nodeId : way.getNodeRefs()) {
+		            	OSMNode node = osmdb.getNode(nodeId);
+		            	
+		            	switch(Tag)
+		            	{
+		            		case "bollard":
+		            			
+		            			if(node.isTag("barrier", "bollard"))
+		            				foundit=true;
+		            			break;
+		            			
+		            		case "turnstile":
+		            			
+		            			if(node.isTag("barrier", "turnstile"))
+		            				foundit=true;
+		            			break;
+		            			
+		            		case "cyclebarrier":
+		            			
+		           			if(node.isTag("barrier", "cycle_barrier"))
+		            				foundit=true;
+		            			break;
+		            			
+		            		case "trafficlight":
+		            			
+		            			if(node.isTag("highway", "traffic_signals") || node.isTag("crossing", "traffic_signals"))
+		            				foundit=true;
+		            			break;
+		            			
+		            		case "trafficlightsound":
+		            			
+		            			if(node.isTag("traffic_signals:sound", "yes"))
+		            				foundit=true;
+		            			break;
+		            			
+		            		case "trafficlightvibration":
+		            			
+		            			if(node.isTag("traffic_signals:vibration", "yes"))
+		            				foundit=true;
+		            			break;
+		            			
+		            		case "trafficlightfloorvibration":
+		            			
+		            			if(node.isTag("traffic_signals:floor_vibration", "yes"))
+		            				foundit=true;
+		            			break;
+		            	}
+		            	
+		           	
+		           	if(foundit) {
+		            		hasTag=true;
+		            		break;
+		            	}
+		            }
+		        	
+		            return hasTag;
+		        }
+		        
+		        
+		        /*AGGIUNTA: metodo provvisorio per vedere se riesco a trovare way contenenti delle bollard, e vedere se funziona*/
+		        protected boolean wayContainsBollard(OSMWay way)
+		        {
+		        	boolean hasBollard=false;
+		        	
+		        	//Questo ciclo dovrebbe eliminare nodi duplicati
+		        	ArrayList<Long> nodes = new ArrayList<Long>(way.getNodeRefs().size());
+		            long last = -1;
+		            double lastLat = -1, lastLon = -1;
+		            String lastLevel = null;
+		            for (long nodeId : way.getNodeRefs()) {
+		                OSMNode node = osmdb.getNode(nodeId);
+		                
+		                boolean levelsDiffer = false;
+		                String level = node.getTag("level");
+		                if (lastLevel == null) {
+		                    if (level != null) {
+		                        levelsDiffer = true;
+		                    }
+		                } else {
+		                    if (!lastLevel.equals(level)) {
+		                        levelsDiffer = true;
+		                    }
+		                }
+		                if (nodeId != last
+		                        && (node.lat != lastLat || node.lon != lastLon || levelsDiffer))
+		                    nodes.add(nodeId);
+		                last = nodeId;
+		                lastLon = node.lon;
+		                lastLat = node.lat;
+		                lastLevel = level;
+		            }
+		
+		            for (long nodeId : way.getNodeRefs()) {
+		            	OSMNode node = osmdb.getNode(nodeId);
+		            	if(node.isBollard()) {
+		            		//System.out.print("La way "+way.getId() +" contiene una bollard nel nodo "+ node.getId()+"\n");
+		            		hasBollard=true;
+		            		break;
+		            	}
+		            }
+		        	
+		            return hasBollard;
+		        }
+		 
 
         // TODO Set this to private once WalkableAreaBuilder is gone
         protected I18NString getNameForWay(OSMWithTags way, String id) {

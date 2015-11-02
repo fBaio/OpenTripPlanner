@@ -346,6 +346,52 @@ public abstract class RoutingResource {
      */
     @QueryParam("disableRemainingWeightHeuristic")
     protected Boolean disableRemainingWeightHeuristic;
+	
+	/*
+	* AGGIUNTA: parametro per decidere se voglio strade pedonali o meno
+	*/
+	//@DefaultValue ("false")
+	//@QueryParam("footway") protected List<Boolean> permitFootway;
+	    
+	    
+	/*
+	* AGGIUNTA: parametro per decidere se posso attraversare i tornelli o meno
+	*/
+	//@DefaultValue ("true")
+	//@QueryParam("allowBollards") protected List<Boolean> permitBollards;
+	    
+	    
+    //AGGIUNTA: parametri preferenza
+	@QueryParam("permitStairs") 
+	protected Integer permitStairs;
+	
+	@QueryParam("permitCrossing") 
+	protected Integer permitCrossing;
+	
+	@QueryParam("permitBollard") 
+	protected Integer permitBollard;
+	
+	@QueryParam("permitTurnstile") 
+	protected Integer permitTurnstile;
+	
+	@QueryParam("permitCycleBarrier") 
+	protected Integer permitCycleBarrier;
+	
+	@QueryParam("permitTrafficLight") 
+	protected Integer permitTrafficLight;
+	
+	@QueryParam("permitTrafficLightSound") 
+	protected Integer permitTrafficLightSound;
+	
+	@QueryParam("permitTrafficLightVibration") 
+	protected Integer permitTrafficLightVibration;
+	
+	@QueryParam("permitTrafficLightVibrationFloor") 
+	protected Integer permitTrafficLightVibrationFloor;
+	
+	@QueryParam("permitFootway") 
+	protected Boolean permitFootway;
+	   
     
     /* 
      * somewhat ugly bug fix: the graphService is only needed here for fetching per-graph time zones. 
@@ -399,6 +445,52 @@ public abstract class RoutingResource {
             }
         }
 
+		/*AGGIUNTA: settaggio del campo permitFootway e delle preferenze*/
+		if (permitStairs != null)
+		        request.setPermitStairs(permitStairs);
+		if (permitCrossing != null)
+		        request.setPermitCrossing(permitCrossing);
+		if (permitBollard != null)
+		        request.setPermitBollard(permitBollard);
+		if (permitCycleBarrier != null)
+		        request.setPermitCycleBarrier(permitCycleBarrier);
+		if (permitTurnstile != null)
+		        request.setPermitTurnstile(permitTurnstile);
+		if (permitTrafficLight != null)
+		        request.setPermitTrafficLight(permitTrafficLight);
+		if (permitTrafficLightSound != null)
+		        request.setPermitTrafficLightSound(permitTrafficLightSound);
+		if (permitTrafficLightVibration != null)
+		        request.setPermitTrafficLightVibration(permitTrafficLightVibration);
+		if (permitTrafficLightVibrationFloor != null)
+		        request.setPermitTrafficLightVibrationFloor(permitTrafficLightVibrationFloor);
+		if (permitFootway != null)
+		        
+		        /*System.out.print("Contenuto request:\n"+ 
+		        				  "Stairs:" + request.permitStairs + "\n" +
+		        				  "Crossing:" + request.permitCrossing + "\n" +
+		        				  "Bollard:" + request.permitBollard + "\n" +
+		        				  "Cyclebarrier:" + request.permitCycleBarrier + "\n" +
+		        				  "Turnstile:" + request.permitTurnstile + "\n" +
+		        				  "TrafficLight:" + request.permitTrafficLight + "\n" +
+		        				  "TrafficLightSound:" + request.permitTrafficLightSound + "\n" +
+		        				  "TrafficLightVibration:" + request.permitTrafficLightVibration + "\n" +
+		        				  "TrafficLightVibrationFloor:" + request.permitTrafficLightVibrationFloor + "\n");
+		        
+		        System.out.print("Contenuto della form:\n"+ 
+		        		  "Stairs:" + permitStairs + "\n" +
+						  "Crossing:" + permitCrossing + "\n" +
+						  "Bollard:" + permitBollard + "\n" +
+						  "Cyclebarrier:" + permitCycleBarrier + "\n" +
+						  "Turnstile:" + permitTurnstile + "\n" +
+						  "TrafficLight:" + permitTrafficLight + "\n" +
+						  "TrafficLightSound:" + permitTrafficLightSound + "\n" +
+						  "TrafficLightVibration:" + permitTrafficLightVibration + "\n" +
+						  "TrafficLightVibrationFloor:" + permitTrafficLightVibrationFloor + "\n");
+		        */
+		        
+		        request.setPermitFootway(permitFootway);
+		
         if (wheelchair != null)
             request.setWheelchairAccessible(wheelchair);
 
