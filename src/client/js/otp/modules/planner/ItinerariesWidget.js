@@ -2,16 +2,14 @@
    modify it under the terms of the GNU Lesser General Public License
    as published by the Free Software Foundation, either version 3 of
    the License, or (at your option) any later version.
-
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+ 
 otp.namespace("otp.widgets");
 
 otp.widgets.ItinerariesWidget =
@@ -113,6 +111,7 @@ otp.widgets.ItinerariesWidget =
         }
 
         var header;
+        
         for(var i=0; i<this.itineraries.length; i++) {
             var itin = this.itineraries[i];
             //$('<h3><span id='+divId+'-headerContent-'+i+'>'+this.headerContent(itin, i)+'<span></h3>').appendTo(this.itinsAccord).click(function(evt) {
@@ -128,11 +127,15 @@ otp.widgets.ItinerariesWidget =
                 this_.module.drawItinerary(itin);
                 this_.activeIndex = $(this).data('index');
             });
+            
+            $(".secondItinerary") // SVUOTO GLI ITINERARI
+            .replaceWith('<div class="secondItinerary" style="padding-bottom: 25px;"></div>');
 
             $('<div id="'+divId+'-'+i+'"></div>')
-            .appendTo(this.itinsAccord)
+            .prependTo(".secondItinerary")  // INSERISCE GLI ITINERARI A CASCATA
             .append(this.renderItinerary(itin, i));
         }
+        
         this.activeIndex = parseInt(itinIndex) || 0;
 
         this.itinsAccord.accordion({
@@ -239,10 +242,8 @@ otp.widgets.ItinerariesWidget =
         /*
         // show iconographic trip leg summary
         html += '<div class="otp-itinsAccord-header-icons">'+itin.getIconSummaryHTML()+'</div>';
-
         // show trip duration
         html += '<div class="otp-itinsAccord-header-duration">('+itin.getDurationStr()+')</div>';
-
         if(itin.groupSize) {
             html += '<div class="otp-itinsAccord-header-groupSize">[Group size: '+itin.groupSize+']</div>';
         } */
@@ -337,14 +338,26 @@ otp.widgets.ItinerariesWidget =
         var accordHtml = "<div id='"+divId+"' class='otp-itinAccord'></div>";
         var itinAccord = $(accordHtml);
         for(var l=0; l<itin.itinData.legs.length; l++) {
-
+            
             var legDiv = $('<div />').appendTo(itinAccord);
 
             var leg = itin.itinData.legs[l];
             //TRANSLATORS: Used when passengers can stay on vehicle. Continues
             //as [agency] route name
             var headerModeText = leg.interlineWithPreviousLeg ? _tr("CONTINUES AS") : otp.util.Itin.modeString(leg.mode).toUpperCase()
-            var headerHtml = "<b>" + headerModeText + "</b>";
+            
+            // var headerHtml = "<img src='img/" + headerModeText + ".png' style='margin-top: -12px; position: absolute; left: 1.5em; top: 50%;'>";
+            
+            // INSERISCE L'ICONA WHEELCHAIR SE E STATO FATTO CHECK SUL TRAGITTO WHEELCHAIR
+            // ALTRIMENTI INSERISCE L'ICONA NORMALE
+            if(document.getElementById('otp-planner-optionsWidget-wheelchair-input') && document.getElementById('otp-planner-optionsWidget-wheelchair-input').checked){
+                var headerHtml = "<img src='img/WHEELC.png' style='margin-top: -12px; position: absolute; left: 1.5em; top: 50%;'>";
+            }
+            else{
+                var headerHtml = "<img src='img/" + headerModeText + ".png' style='margin-top: -12px; position: absolute; left: 1.5em; top: 50%;'>";
+            }
+            
+            
 
             // Add info about realtimeness of the leg
             if (leg.realTime && typeof(leg.arrivalDelay) === 'number') {
@@ -447,16 +460,16 @@ otp.widgets.ItinerariesWidget =
         }
 
         // add start and end time rows and the main leg accordion display
-        //TRANSLATORS: Start: Time and date (Shown before path itinerary)
-        itinDiv.append("<div class='otp-itinStartRow'><b>" + pgettext('template', "Start") + "</b>: "+itin.getStartTimeStr()+"</div>");
         itinDiv.append(itinAccord);
+        //TRANSLATORS: Start: Time and date (Shown before path itinerary)
+        itinDiv.append("<div class='otp-itinStartRow'><b>" + pgettext('template', "Start") + "</b> "+itin.getStartTimeStr()+"</div>");
         //TRANSLATORS: End: Time and date (Shown after path itinerary)
-        itinDiv.append("<div class='otp-itinEndRow'><b>" + _tr("End") + "</b>: "+itin.getEndTimeStr()+"</div>");
+        itinDiv.append("<div class='otp-itinEndRow'><b>" + _tr("End") + "</b> "+itin.getEndTimeStr()+"</div>");
 
         // add trip summary
 
         var tripSummary = $('<div class="otp-itinTripSummary" />')
-        .append('<div class="otp-itinTripSummaryHeader">' + _tr("Trip Summary") + '</div>')
+        //.append('<div class="otp-itinTripSummaryHeader">' + _tr("Trip Summary") + '</div>')
         //TRANSLATORS: Travel: hour date on which this trip is made
         .append('<div class="otp-itinTripSummaryLabel">' + _tr("Travel") + '</div><div class="otp-itinTripSummaryText">'+itin.getStartTimeStr()+'</div>')
         //TRANSLATORS: Time: minutes How long is this trip
@@ -482,7 +495,7 @@ otp.widgets.ItinerariesWidget =
         var carDistance = itin.getModeDistance("CAR");
         if(carDistance > 0) {
             //TRANSLATORS: Total distance in a car for this trip
-            tripSummary.append('<div class="otp-itinTripSummaryLabel">' + _tr("Total drive") + '</div><div class="otp-itinTripSummaryText">' +
+            tripSummary.append('<div class="otp-itinTripSummaryLabel">' + _tr("Total Drive") + '</div><div class="otp-itinTripSummaryText">' +
                 otp.util.Itin.distanceString(carDistance) + '</div>')
         }
 
@@ -496,22 +509,19 @@ otp.widgets.ItinerariesWidget =
            //TRANSLATORS: cost of trip
             tripSummary.append('<div class="otp-itinTripSummaryLabel">' + _tr("Fare") +'</div><div class="otp-itinTripSummaryText">'+itin.getFareStr()+'</div>');
         }
-
-
-
+        
         var tripSummaryFooter = $('<div class="otp-itinTripSummaryFooter" />');
 
         //TRANSLATORS: Valid date time; When is this trip correct
-        tripSummaryFooter.append(_tr('Valid') + ' ' + moment().format(otp.config.locale.time.format));
+        //tripSummaryFooter.append(_tr('Valid') + ' ' + moment().format(otp.config.locale.time.format));
 
         var itinLink = this.constructLink(itin.tripPlan.queryParams, { itinIndex : index });
         if(this.showItineraryLink) {
             //TRANSLATORS: Links to this itinerary
-            tripSummaryFooter.append(' | <a href="'+itinLink+'">' + _tr("Link to Itinerary") + '</a>');
+            tripSummaryFooter.append(' <a href="'+itinLink+'">' + _tr("Link to Itinerary") + '</a>');
         }
 
         if(this.showPrintLink) {
-            tripSummaryFooter.append(' | ');
             $('<a href="#">' + _tr('Print') +'</a>').click(function(evt) {
                 evt.preventDefault();
 
@@ -525,7 +535,7 @@ otp.widgets.ItinerariesWidget =
             var subject = _tr("Your Trip");
             var body = itin.getTextNarrative(itinLink);
             //TRANSLATORS: Link to send trip by email
-            tripSummaryFooter.append(' | <a href="mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)+'" target="_blank">' + _tr("Email") + '</a>');
+            tripSummaryFooter.append(' <a href="mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)+'" target="_blank">' + _tr("Email") + '</a>');
         }
 
         tripSummary.append(tripSummaryFooter)
@@ -613,20 +623,15 @@ otp.widgets.ItinerariesWidget =
             // show the intermediate stops, if applicable -- REPLACED BY TRIP VIEWER
 
             /*if(this.module.showIntermediateStops) {
-
                 $('<div class="otp-itin-leg-buffer"></div>').appendTo(legDiv);
                 var intStopsDiv = $('<div class="otp-itin-leg-intStops"></div>').appendTo(legDiv);
-
                 var intStopsListDiv = $('<div class="otp-itin-leg-intStopsList"></div>')
-
                 $('<div class="otp-itin-leg-intStopsHeader">'+leg.intermediateStops.length+' Intermediate Stops</div>')
                 .appendTo(intStopsDiv)
                 .click(function(event) {
                     intStopsListDiv.toggle();
                 });
-
                 intStopsListDiv.appendTo(intStopsDiv);
-
                 for(var i=0; i < leg.intermediateStops.length; i++) {
                     var stop = leg.intermediateStops[i];
                     $('<div class="otp-itin-leg-intStopsListItem">'+(i+1)+'. '+stop.name+' (ID #'+stop.stopId.id+')</div>').

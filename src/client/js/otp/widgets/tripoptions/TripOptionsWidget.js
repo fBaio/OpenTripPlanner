@@ -56,7 +56,7 @@ otp.widgets.tripoptions.TripOptionsWidget =
     },
 
     initScrollPanel : function() {
-        this.scrollPanel = $('<div id="'+this.id+'-scollPanel" class="notDraggable" style="overflow: auto;"></div>').appendTo(this.$());
+        this.scrollPanel = $('<div id="'+this.id+'-scollPanel" class="notDraggable" style="overflow: auto;"></div>').appendTo(".firsttripOptions");
         this.$().resizable({
             minHeight: 80,
             alsoResize: this.scrollPanel
@@ -406,6 +406,51 @@ otp.widgets.tripoptions.TimeSelector =
 
 });
 
+//**FootwaySelector **//
+
+otp.widgets.tripoptions.FootwaySelector =
+    otp.Class(otp.widgets.tripoptions.TripOptionsWidgetControl, {
+
+    id           :  null,
+    //TRANSLATORS: label for checkbox
+    label        : _tr("Footway accesible trip:"),
+
+    initialize : function(tripWidget) {
+
+        otp.widgets.tripoptions.TripOptionsWidgetControl.prototype.initialize.apply(this, arguments);
+
+        this.id = tripWidget.id;
+
+
+        ich['otp-tripOptions-footway']({
+            widgetId : this.id,
+            label : this.label,
+        }).appendTo(this.$());
+
+    },
+
+    doAfterLayout : function() {
+        var this_ = this;
+
+        $("#"+this.id+"-footway-input").change(function() {
+            this_.tripWidget.module.permitFootway = this.checked;
+        });
+    },
+
+    restorePlan : function(data) {
+        if(data.queryParams.footway) {
+            $("#"+this.id+"-footway-input").prop("checked", data.queryParams.permitFootway);
+        }
+    },
+
+    isApplicableForMode : function(mode) {
+        //footway mode is shown on transit and walk trips that
+        //doesn't include a bicycle
+        return (otp.util.Itin.includesTransit(mode)  || mode == "WALK") && !otp.util.Itin.includesBicycle(mode);
+    }
+});
+
+
 
 //** WheelChairSelector **//
 
@@ -471,16 +516,20 @@ otp.widgets.tripoptions.ModeSelector =
         this.optionLookup = {};
 
         //TRANSLATORS: Label for dropdown Travel by: [mode of transport]
-        var html = "<div class='notDraggable'>" + _tr("Travel by") + ": ";
+        var html = "<div class='notDraggable' style='padding-bottom: 5px;'>" + _tr("Travel by") + ": ";
         html += '<select id="'+this.id+'">';
         _.each(this.modes, function(text, key) {
             html += '<option>'+text+'</option>';
         });
         html += '</select>';
-        html += '<div id="'+this.id+'-widgets" style="overflow: hidden;"></div>';
+        
         html += "</div>";
 
-        $(html).appendTo(this.$());
+		$(html).prependTo("#otp-planner-optionsWidget-scollPanel"); 
+		
+		var widgetsGen = '<div id="'+this.id+'-widgets" style="overflow: hidden;"></div>';
+		
+		$(widgetsGen).appendTo(this.$());
         //this.setContent(content);
     },
 
@@ -1089,7 +1138,7 @@ otp.widgets.tripoptions.Submit =
         this.id = tripWidget.id+"-submit";
 
         //TRANSLATORS: button to send query for trip planning
-        $('<div class="notDraggable" style="text-align:center;"><button id="'+this.id+'-button">' + _tr("Plan Your Trip") + '</button></div>').appendTo(this.$());
+        $('<div class="notDraggable" style="text-align:center;"><button id="'+this.id+'-button">' + _tr("Plan Your Trip") + '</button></div>').appendTo(".firsttripOptions");
         //console.log(this.id+'-button')
 
     },

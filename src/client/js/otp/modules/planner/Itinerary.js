@@ -233,7 +233,7 @@ otp.modules.planner.Itinerary = otp.Class({
         
         //TRANSLATORS: Start: location at [time date] (Used in print itinerary
         //when do you start your trip)
-        html += '<h3>' + _tr('Start: %(location)s at %(time_date)s', { 'location': this.getStartLocationStr(), 'time_date': this.getStartTimeStr()}) + '</h3>';
+        html += '<h3>' + _tr('Start %(location)s at %(time_date)s', { 'location': this.getStartLocationStr(), 'time_date': this.getStartTimeStr()}) + '</h3>';
         
         for(var l=0; l<this.itinData.legs.length; l++) {
             var leg = this.itinData.legs[l];
@@ -291,7 +291,7 @@ otp.modules.planner.Itinerary = otp.Class({
         
         //TRANSLATORS: End: location at [time date] (Used in print itinerary
         //when do you come at a destination)
-        html += '<h3>' + _tr('End: %(location)s at %(time_date)s', { 'location': this.getEndLocationStr(), 'time_date': this.getEndTimeStr()} )+'</h3>';
+        html += '<h3>' + _tr('End %(location)s at %(time_date)s', { 'location': this.getEndLocationStr(), 'time_date': this.getEndTimeStr()} )+'</h3>';
 
         // trip summary
         html += '<div class="otp-itinTripSummary" style="font-size: .9em">';

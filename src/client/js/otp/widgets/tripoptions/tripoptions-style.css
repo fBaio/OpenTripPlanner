@@ -4,44 +4,58 @@
   overflow: hidden;
 }
 
-/* Locations Picker */
+/*  Locations Picker */
 
 .otp-tripOptions-loc-input {
-    width:100%;
-    border-radius: 0px;
-    border: 1px solid;    
+    border: medium none;
+    border-radius: 5px;
+    font-size: small;
+    padding-left: 5px;
+    width: 100%;   
+        text-align: center;
 }
 
 .otp-tripOptions-loc-dropdownBtn {
-    width: 100%;
-    height: 100%;
+    background-color: white;
+    border-image: none;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
     font-size: 9px;
-    padding: 0px;
-    margin: 0px;
+    height: 100%;
+    margin-left: 5px;
+    padding: 0;
     text-align: center;
-    border-radius: 0px;
-    border: solid 1px;
-    border-color: #fff #aaa #aaa #fff;
+    width: 100%;
 }
 
 .otp-tripOptions-loc-reverseBtn {
-    width: 20px;
-    height: 22px;
+    background-color: transparent;
+    border: medium none;
+    height: 25px;
+    margin-top: 5px;
     padding: 2px 1px;
-    border-radius: 0px;
-    border: solid 1px;
-    border-color: #fff #aaa #aaa #fff;
+    width: 25px;
 }
 
 /* Date/Time Picker */
 
 .otp-date-input {
+    border: medium none;
+    border-radius: 5px;
+    font-size: small;
     text-align: center;
-    width: 75px;
+    width: 33%;
 }
 
 .otp-time-input {
+    border: medium none;
+    border-radius: 5px;
+    font-size: small;
     text-align: center;
-    width: 55px;
+    width: 30%;
 }
 
+#otp-planner-optionsWidget-timeSelector-nowButton{
+    display: none;
+}

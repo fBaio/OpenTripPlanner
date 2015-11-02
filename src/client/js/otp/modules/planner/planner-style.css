@@ -48,21 +48,18 @@
     height: 1.2em;
     padding-top:.1em  
 }
-
 .otp-itinsAccord-header-icons {
     float:left;
     height: 1.2em;
     padding-top: .35em;
     margin-left: .6em;
 }
-
 .otp-itinsAccord-header-duration {
     float: left;
     height: 1.2em;
     margin-left: .8em;
     padding-top:.45em
 }
-
 .otp-itinsAccord-header-groupSize {
     float: left;
     height: 1.2em;
@@ -70,7 +67,6 @@
     padding-top:.45em;
     font-weight: bold;
 }
-
 /* new header styling */
 
 .otp-itinsAccord-header-number {
@@ -121,7 +117,10 @@
 
 
 .otp-itinStartRow {
-    margin-bottom: .5em;
+    color: white;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 20px;
 }
 
 .otp-itinAlertRow {
@@ -133,38 +132,39 @@
 }
 
 .otp-itinEndRow {
-    margin-top: .5em;
+    color: white;
+    padding-left: 25px;
+    padding-right: 25px;
 }
 
 .otp-itinTripSummary {
-    margin-top: 15px;
-    padding: 5px;
-    border: 1px solid #bbb;
-    background: #eee;
+    background: #314395 none repeat scroll 0 0;
+    padding: 12px 25px 25px;
 }
 
 .otp-itinTripSummaryHeader {
+    color: white;
     font-size: 1.3em;
     font-weight: bold;
-    color: #aaa;
-    margin-bottom: .5em;
+    margin-bottom: 0.5em;
 }
 
 .otp-itinTripSummaryLabel {
+    color: white;
     float: left;
-    font-weight: bold;
     width: 8.5em;
 }
 
 .otp-itinTripSummaryText {
     margin-left: 7.5em;
+    color: white;
 }
 
 .otp-itinTripSummaryFooter {
     font-size: .9em;
     margin-top: 1.2em;
-    color: gray;
-    text-align: center;
+    color: white;
+    text-align: left;
 }
 
 .otp-itinsButtonRow {
@@ -302,6 +302,7 @@
     margin-bottom: .3em;
     padding: .3em;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .otp-itin-step-icon {
@@ -314,15 +315,15 @@
 .otp-itin-step-dist {
     margin: 0px 4px 0px 8px;
     font-size: .8em;
-    width: 25px;
+    width: 55px;
     float: right;
     text-align: center;
-    color: gray;
+    color: black;
     
 }
 
 .otp-itin-step-text {
-    font-size: .8em;
+    font-size: .8em; 
     margin: 0px 30px;
 }
 

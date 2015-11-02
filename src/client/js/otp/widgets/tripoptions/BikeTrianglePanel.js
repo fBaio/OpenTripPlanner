@@ -74,7 +74,7 @@ otp.widgets.BikeTrianglePanel = new otp.Class({
 
         var bg = canvas.rect(0,0,width,height).attr({
               stroke: 'none',
-              fill: '#eee'
+              fill: 'white'
           });
 
         var triangle = canvas.path(["M",margin+tri_side/2,margin,"L",margin+tri_side,height-margin,"L",margin,height-margin,"z"]);
@@ -289,4 +289,3 @@ otp.widgets.BikeTrianglePanel = new otp.Class({
     CLASS_NAME: "otp.widgets.BikeTrianglePanel"
 
 });
-

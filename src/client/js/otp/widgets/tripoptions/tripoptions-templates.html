@@ -11,20 +11,20 @@
         <div style="position: absolute; left:0px; right: 30px; height: 20px;">
             <div style="position: absolute; left:0px; right: 16px; top:1px; bottom: 0px;">
                 <input id="{{widgetId}}-start" class="borderBox otp-tripOptions-loc-input">
-            </div>
+            </div><!--
             <div style="position: absolute; top:0px; bottom: 0px; right: 0px; width: 16px;">
                 <button id="{{widgetId}}-startDropdown" class="borderBox otp-tripOptions-loc-dropdownBtn">&#x25BC;</button>
-            </div>
+            </div>-->
         </div>
         <div style="position: absolute; top: 1.8em; left:0px; right: 30px; height: 20px;">
             <div style="position: absolute; left:0px; right: 16px; top:1px; bottom: 0px;">
                 <input id="{{widgetId}}-end" class="borderBox otp-tripOptions-loc-input">
-            </div>
+            </div><!--
             <div style="position: absolute; top:0px; bottom: 0px; right: 0px; width: 16px;">
                 <button id="{{widgetId}}-endDropdown" class="borderBox otp-tripOptions-loc-dropdownBtn">&#x25BC;</button>
-            </div>
+            </div>-->
         </div>
-        <div style="position: absolute; top: 10px; right:0px; width: 20px; height: 20px; background: red;">
+        <div style="position: absolute; top: 10px; right:0px; width: 23px; height: 20px;">
             <button id="{{widgetId}}-reverseButton" class="otp-tripOptions-loc-reverseBtn"><img src="images/reverse.png" /></button>
         </div>
     </div>
@@ -70,6 +70,17 @@
     <div class="notDraggable">
         {{label}} &nbsp;
 		<input type="checkbox" id="{{widgetId}}-wheelchair-input" />
+    </div>
+
+</script>
+
+<!-- TESTFootwaySelector -->
+
+<script id="otp-tripOptions-footway" type="text/html">
+
+    <div class="notDraggable">
+        {{label}} &nbsp;
+		<input type="checkbox" id="{{widgetId}}-footway-input" />
     </div>
 
 </script>
