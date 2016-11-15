@@ -13,7 +13,7 @@
 */
 
 otp.namespace("otp.modules.planner");
-
+//modifiche baiocchi
 otp.modules.planner.defaultQueryParams = {
     startPlace                      : null,
     endPlace                        : null,
