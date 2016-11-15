@@ -1,0 +1,61 @@
+.otp-tripOptionsWidget {
+  padding: 0.25em 0.5em;
+  z-index: 1100;
+  overflow: hidden;
+}
+
+/*  Locations Picker */
+
+.otp-tripOptions-loc-input {
+    border: medium none;
+    border-radius: 5px;
+    font-size: small;
+    padding-left: 5px;
+    width: 100%;   
+        text-align: center;
+}
+
+.otp-tripOptions-loc-dropdownBtn {
+    background-color: white;
+    border-image: none;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    font-size: 9px;
+    height: 100%;
+    margin-left: 5px;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.otp-tripOptions-loc-reverseBtn {
+    background-color: transparent;
+    border: medium none;
+    height: 25px;
+    margin-top: 5px;
+    padding: 2px 1px;
+    width: 25px;
+}
+
+/* Date/Time Picker */
+
+.otp-date-input {
+    border: medium none;
+    border-radius: 5px;
+    font-size: small;
+    text-align: center;
+    width: 33%;
+}
+
+.otp-time-input {
+    border: medium none;
+    border-radius: 5px;
+    font-size: small;
+    text-align: center;
+    width: 30%;
+}
+
+#otp-planner-optionsWidget-timeSelector-nowButton{
+    display: none;
+}
