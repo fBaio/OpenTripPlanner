@@ -21,6 +21,7 @@ otp.widgets.BikeTrianglePanel = new otp.Class({
     barWidth    : 0,
     tri_size    : 0,
 
+	//codice baiocchi
     trianglequickFactor:    null,
     triangleflatFactor:   null,
     trianglesafeFactor:  null,
